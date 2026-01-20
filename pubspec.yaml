@@ -1,7 +1,7 @@
 name: telebot_feedback
 description: Một thư viện gửi feedback về Telegram kèm thông tin thiết bị và tracking người dùng.
 version: 0.0.1
-homepage: https://github.com/your_username/telebot_feedback
+homepage: https://github.com/mdnast/telebot_feedback.git
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
