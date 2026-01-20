@@ -1,39 +1,52 @@
-# Telebot Feedback 🚀
+# 🚀 Telebot Feedback for Flutter
 
-Thư viện Flutter hiện đại giúp thu thập phản hồi từ người dùng và gửi trực tiếp về kênh Telegram của bạn. Giải pháp hoàn hảo cho các nhóm nhỏ và nhà phát triển độc lập muốn có vòng lặp phản hồi nhanh chóng mà không cần thiết lập backend phức tạp.
+[![Pub Version](https://img.shields.io/pub/v/telebot_feedback?color=blue&style=flat-square)](https://pub.dev/packages/telebot_feedback)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=flat-square&logo=Flutter&logoColor=white)](https://flutter.dev)
 
-![Feedback UI](https://raw.githubusercontent.com/mdnast/telebot_feedback/main/screenshots/preview.png)
-
-## Tính năng ✨
-
-- **Giao diện hiện đại**: Hiệu ứng mượt mà, thiết kế lấy cảm hứng từ glassmorphism và hỗ trợ haptic feedback.
-- **Tích hợp dễ dàng**: Chỉ với một dòng lệnh để hiển thị bottom sheet phản hồi.
-- **Tự động thu thập Metadata**: Tự động lấy thông tin thiết bị, phiên bản ứng dụng, thời gian sử dụng và ngôn ngữ.
-- **Tùy biến cao**: Thêm các tham số tùy chỉnh của riêng bạn thông qua `extraInfo`.
-- **Custom Message (Mới 🌟)**: Tự định nghĩa 100% nội dung tin nhắn gửi về Telegram qua `messageBuilder`.
+Thư viện Flutter hiện đại giúp thu thập phản hồi từ người dùng và gửi trực tiếp về kênh **Telegram** của bạn. Giải pháp hoàn hảo để xây dựng vòng lặp phản hồi nhanh chóng mà không cần backend phức tạp.
 
 ---
 
-## 🛠️ 1. Hướng dẫn lấy Token & Chat ID chi tiêt
+## ✨ Tính năng nổi bật
 
-Để thư viện hoạt động, bạn cần **Bot Token** và **Chat ID**. Dưới đây là cách lấy từng loại:
-
-### Cách tạo Bot và lấy Bot Token
-1. Mở Telegram, tìm kiếm bot **@BotFather**.
-2. Chat `/newbot`.
-3. Nhập tên cho Bot (VD: `My Feedback Bot`).
-4. Nhập username cho Bot (phải kết thúc bằng chữ `bot`, VD: `my_feedback_123_bot`).
-5. Sau khi thành công, bạn sẽ nhận được **API Token**. Hãy lưu lại chuỗi này.
-
-### Cách lấy Chat ID
-*   **Cho Group (Nhóm)**: Thêm bot của bạn và bot **@RawDataBot** vào nhóm. Nó sẽ in ra mẩu tin JSON. Tìm dòng `"id": -123456789`. Đó chính là Chat ID.
-*   **Cho Channel (Kênh)**: Thêm bot của bạn làm Admin. Đăng 1 tin nhắn rồi **Forward** tin nhắn đó sang bot **@userinfobot**. Bạn sẽ nhận được ID.
+*   🎨 **Giao diện hiện đại**: Hiệu ứng mượt mà, thiết kế lấy cảm hứng từ glassmorphism và hỗ trợ haptic feedback.
+*   📱 **Auto Metadata**: Tự động lấy tên máy (Samsung S23, iPhone 15...), hệ điều hành, phiên bản App và ngôn ngữ.
+*   🔍 **Dữ liệu linh hoạt**: Dễ dàng đính kèm các tham số tùy chỉnh như User ID, Lịch sử xem thông qua `extraInfo`.
+*   🌟 **Custom Message**: Tự định nghĩa 100% nội dung tin nhắn gửi về Telegram qua `messageBuilder`.
+*   🌍 **Đa ngôn ngữ**: Hỗ trợ tùy chỉnh toàn bộ văn bản giao diện (Mặc định: Tiếng Việt).
 
 ---
 
-## 🚀 2. Cách sử dụng cơ bản
+## 🛠️ 1. Cài đặt Bot & Lấy ID (Trong 2 phút)
 
+Để hệ thống hoạt động, bạn cần chuẩn bị **Token** và **Chat ID**.
+
+### 🤖 Bước 1: Tạo Bot Telegram
+1. Chat với **[@BotFather](https://t.me/botfather)**, gõ `/newbot`.
+2. Đặt tên và username cho bot.
+3. Lưu lại **API Token** bạn nhận được.
+
+### 🆔 Bước 2: Lấy Chat ID (Nơi nhận tin nhắn)
+*   **Nếu gửi về Group**: Thêm bot của bạn và bot **[@RawDataBot](https://t.me/RawDataBot)** vào nhóm. Copy dãy số `id` (VD: `-100123456789`).
+*   **Nếu gửi về Channel**: Thêm bot làm Admin. Forward 1 tin nhắn từ Channel sang **[@userinfobot](https://t.me/userinfobot)** để lấy ID.
+
+---
+
+## 🚀 2. Triển khai nhanh (Quick Start)
+
+Thêm vào `pubspec.yaml`:
+```yaml
+telebot_feedback:
+  git:
+    url: https://github.com/mdnast/telebot_feedback.git
+    ref: main
+```
+
+Sử dụng trong code:
 ```dart
+import 'package:telebot_feedback/telebot_feedback.dart';
+
 TelebotFeedback.show(
   context,
   botToken: 'YOUR_BOT_TOKEN',
@@ -43,40 +56,27 @@ TelebotFeedback.show(
 
 ---
 
-## 🔍 3. Hướng dẫn chuyên sâu: Dữ liệu tự động & Dữ liệu thật
+## 🔍 3. Hướng dẫn chuyên sâu & Tùy biến
 
-Đây là phần quan trọng nhất để bạn hiểu thư viện lấy cái gì và bạn cần truyền cái gì.
+### 📊 Dữ liệu Tự động vs Dữ liệu Thủ công
+Thư viện tự động thu thập thông tin thiết bị. Để gửi thêm dữ liệu riêng của App, hãy dùng `extraInfo`.
 
-### A. Dữ liệu thư viện TỰ ĐỘNG lấy
-Bạn không cần viết code, khi gửi feedback, thư viện luôn đính kèm:
-*   **Thiết bị**: Samsung S23, iPhone 15 Pro...
-*   **OS**: Android 14, iOS 17...
-*   **App Version**: 1.0.0 (12)...
-*   **Ngôn ngữ**: vi, en...
-
-### B. Dữ liệu THẬT của App bạn (Cần truyền vào)
-Nếu bạn muốn biết "ai gửi" hoặc "họ đã làm gì trước đó", hãy dùng `extraInfo`.
-
-**Ví dụ: Gửi Lịch sử xem (Watch History)**
+**Ví dụ: Gửi ID người dùng và Lịch sử xem bài viết**
 ```dart
-// Giả định bạn có dữ liệu thật trong app
-String currentEmail = "user@gmail.com";
-List<String> watchList = ["Video A", "Video B", "Video C"];
-
 TelebotFeedback.show(
   context,
   botToken: '...',
   chatId: '...',
   extraInfo: {
-    'User': currentEmail,
-    'Xem gần đây': '\n - ' + watchList.join('\n - '),
+    'User': 'user_vip_99',
+    'Xem gần đây': '\n • Bài viết số 1\n • Video hướng dẫn Flutter',
     'Trạng thái': 'Đang trực tuyến',
   },
 );
 ```
 
-### C. Tự định nghĩa 100% nội dung tin nhắn (`messageBuilder`) 🌟
-Nếu bạn muốn thay đổi hoàn toàn cách hiển thị trên Telegram (đổi icon, đổi thứ tự dòng...), hãy dùng `messageBuilder`.
+### 🎨 Tự định nghĩa Tin nhắn (`messageBuilder`) 
+Nếu bạn muốn thay đổi "tận gốc" giao diện tin nhắn trên Telegram, hãy sử dụng `messageBuilder`.
 
 ```dart
 TelebotFeedback.show(
@@ -84,45 +84,43 @@ TelebotFeedback.show(
   botToken: '...',
   chatId: '...',
   messageBuilder: (data) {
-    return "💎 <b>FEEDBACK MỚI</b>\n"
-           "👤 Người gửi: ${data.extraInfo?['User']}\n"
+    return "💎 <b>PHẢN HỒI MỚI</b>\n"
+           "👤 Người gửi: ${data.extraInfo?['User'] ?? 'Ẩn danh'}\n"
            "📝 Nội dung: ${data.feedback}\n"
-           "📱 Máy: ${data.deviceName}";
+           "📱 Thiết bị: ${data.deviceName}";
   },
 );
 ```
 
+> [!TIP]
+> Bạn có thể sử dụng các thẻ HTML như `<b>`, `<i>`, `<code>` để làm tin nhắn nổi bật và chuyên nghiệp hơn.
+
 ---
 
-## 🌍 4. Tùy chỉnh Ngôn ngữ giao diện (Localization)
+## 🌍 4. Tùy chỉnh Ngôn ngữ (Localization)
 
-Nếu bạn muốn đổi chữ trên các nút bấm hoặc câu hỏi ở **giao diện App**, hãy dùng `locale`:
+Dễ dàng thay đổi câu hỏi hoặc nhãn nút bấm trên giao diện Bottom Sheet:
 
 ```dart
 TelebotFeedback.show(
   context,
   // ...
   locale: TeleFeedbackLocale(
-    feedbackQuestion: "Bạn thấy app thế nào?",
-    feedbackHint: "Nhập góp ý tại đây nhé...",
-    tagEasy: "Dễ dùng",
+    feedbackQuestion: "Trải nghiệm của bạn thế nào?",
+    feedbackHint: "Để lại lời nhắn cho mình...",
+    tagEasy: "Rất dễ dùng",
+    tagBeautiful: "Giao diện đẹp",
   ),
 );
 ```
 
 ---
 
-## 📦 5. Cài đặt (Installation)
+## � Giấy phép (License)
 
-Thêm vào `pubspec.yaml`:
+Thư viện được phát hành dưới bản quyền **MIT License**.
 
-```yaml
-telebot_feedback:
-  git:
-    url: https://github.com/mdnast/telebot_feedback.git
-    ref: main
-```
-
-## Giấy phép 📄
-
-Giấy phép MIT. Bản quyền thuộc về [mdnast].
+---
+<p align="center">
+  Made with ❤️ for Flutter Developers
+</p>
