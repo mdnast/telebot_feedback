@@ -28,7 +28,7 @@ Thư viện Flutter hiện đại giúp thu thập phản hồi từ người d�
 3. Lưu lại **API Token** bạn nhận được.
 
 ### 🆔 Bước 2: Lấy Chat ID (Nơi nhận tin nhắn)
-*   **Nếu gửi về Group**: Thêm bot của bạn và bot **[@RawDataBot](https://t.me/RawDataBot)** vào nhóm. Copy dãy số `id` (VD: `-100123456789`).
+*   **Nếu gửi về Group**: Thêm bot của bạn @GetIDs Bot vào nhóm. Copy dãy số `id` (VD: `-100123456789`).
 *   **Nếu gửi về Channel**: Thêm bot làm Admin. Forward 1 tin nhắn từ Channel sang **[@userinfobot](https://t.me/userinfobot)** để lấy ID.
 
 ---
