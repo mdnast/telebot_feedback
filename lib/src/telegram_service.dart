@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'feedback_data.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -15,6 +16,8 @@ class TelegramService {
     required BuildContext context,
     int? usageSeconds,
     DateTime? installDate,
+    Map<String, String>? extraInfo,
+    TeleMessageBuilder? messageBuilder,
   }) async {
     if (botToken.isEmpty || chatId.isEmpty) return false;
 
@@ -67,25 +70,52 @@ class TelegramService {
 
     final tagsStr = tags.isNotEmpty ? tags.join(', ') : 'Không có';
 
-    // 5. Template tin nhắn HTML (An toàn hơn Markdown)
-    final message =
-        "🌟 <b>Đánh giá:</b> $ratingLabel\n"
+    // 5. Thêm Extra Info (nếu có)
+    String extraStr = "";
+    if (extraInfo != null && extraInfo.isNotEmpty) {
+      extraStr = "\n\n<b>🔍 THÔNG TIN THÊM</b>\n";
+      extraInfo.forEach((key, value) {
+        extraStr += "• $key: $value\n";
+      });
+    }
+
+    // 6. Template tin nhắn HTML (An toàn hơn Markdown)
+    final message = "🌟 <b>Đánh giá:</b> $ratingLabel\n"
         "🏷️ <b>Nhãn:</b> $tagsStr\n"
-        "📝 <b>Nội dung:</b> ${_escapeHtml(feedback)}\n"
+        "📝 <b>Nội dung:</b> ${_escapeHtml(feedback)}\n\n"
         "📊 <b>THỐNG KÊ NGƯỜI DÙNG</b>\n"
         "$trackingInfo"
         "📱 <b>Thiết bị:</b> $deviceName ($osVersion)\n"
-        "🌍 <b>Ngôn ngữ:</b> $localeDisplay | ℹ️ <b>Bản:</b> $appVersion";
+        "🌍 <b>Ngôn ngữ:</b> $localeDisplay | ℹ️ <b>Bản:</b> $appVersion"
+        "$extraStr";
+
+    // 7. Sử dụng builder nếu có
+    String finalMessage = message;
+    if (messageBuilder != null) {
+      finalMessage = messageBuilder(TeleFeedbackData(
+        feedback: feedback,
+        ratingLabel: ratingLabel,
+        tags: tags,
+        deviceName: deviceName,
+        osVersion: osVersion,
+        appVersion: appVersion,
+        locale: localeDisplay,
+        usageSeconds: usageSeconds,
+        installDate: installDate,
+        extraInfo: extraInfo,
+      ));
+    }
 
     // Gửi đi
     try {
-      final url = Uri.parse('https://api.telegram.org/bot$botToken/sendMessage');
+      final url =
+          Uri.parse('https://api.telegram.org/bot$botToken/sendMessage');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'chat_id': chatId,
-          'text': message,
+          'text': finalMessage,
           'parse_mode': 'HTML',
         }),
       );
@@ -97,9 +127,9 @@ class TelegramService {
 
   static String _escapeHtml(String text) {
     return text
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;");
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
   }
 
   static String _getFlag(String locale) {

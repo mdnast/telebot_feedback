@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'telegram_service.dart';
 import 'feedback_locale.dart';
+import 'feedback_data.dart';
 
 class TeleFeedbackDialog extends StatefulWidget {
   final String botToken;
   final String chatId;
   final int? usageSeconds;
   final DateTime? installDate;
+  final Map<String, String>? extraInfo;
+  final TeleMessageBuilder? messageBuilder;
   final TeleFeedbackLocale locale;
 
   const TeleFeedbackDialog({
@@ -15,6 +18,8 @@ class TeleFeedbackDialog extends StatefulWidget {
     required this.chatId,
     this.usageSeconds,
     this.installDate,
+    this.extraInfo,
+    this.messageBuilder,
     this.locale = const TeleFeedbackLocale(),
   });
 
@@ -47,25 +52,38 @@ class _TeleFeedbackDialogState extends State<TeleFeedbackDialog> {
 
   String _getRatingLabel(int rating) {
     switch (rating) {
-      case 1: return '😡 Rất tệ';
-      case 2: return '☹️ Không hài lòng';
-      case 3: return '😐 Bình thường';
-      case 4: return '😊 Hài lòng';
-      case 5: return '😍 Tuyệt vời';
-      default: return 'Bình thường';
+      case 1:
+        return '😡 Rất tệ';
+      case 2:
+        return '☹️ Không hài lòng';
+      case 3:
+        return '😐 Bình thường';
+      case 4:
+        return '😊 Hài lòng';
+      case 5:
+        return '😍 Tuyệt vời';
+      default:
+        return 'Bình thường';
     }
   }
 
   String _getTagLabel(String id) {
     // Label gửi lên Telegram (Mặc định tiếng Việt theo yêu cầu)
     switch (id) {
-      case 'easy': return '🚀 Dễ sử dụng';
-      case 'beautiful': return '🎨 Giao diện đẹp';
-      case 'fast': return '⚡ Nhanh, mượt';
-      case 'hard': return '😕 Hơi khó dùng';
-      case 'slow': return '🐢 Chậm / lag';
-      case 'ads': return '🧩 Nhiều quảng cáo';
-      default: return '📝 Khác';
+      case 'easy':
+        return '🚀 Dễ sử dụng';
+      case 'beautiful':
+        return '🎨 Giao diện đẹp';
+      case 'fast':
+        return '⚡ Nhanh, mượt';
+      case 'hard':
+        return '😕 Hơi khó dùng';
+      case 'slow':
+        return '🐢 Chậm / lag';
+      case 'ads':
+        return '🧩 Nhiều quảng cáo';
+      default:
+        return '📝 Khác';
     }
   }
 
@@ -73,13 +91,20 @@ class _TeleFeedbackDialogState extends State<TeleFeedbackDialog> {
     // Label hiển thị trên UI (Lấy từ Config Locale)
     final loc = widget.locale;
     switch (id) {
-      case 'easy': return loc.tagEasy;
-      case 'beautiful': return loc.tagBeautiful;
-      case 'fast': return loc.tagFast;
-      case 'hard': return loc.tagHard;
-      case 'slow': return loc.tagSlow;
-      case 'ads': return loc.tagAds;
-      default: return loc.tagOther;
+      case 'easy':
+        return loc.tagEasy;
+      case 'beautiful':
+        return loc.tagBeautiful;
+      case 'fast':
+        return loc.tagFast;
+      case 'hard':
+        return loc.tagHard;
+      case 'slow':
+        return loc.tagSlow;
+      case 'ads':
+        return loc.tagAds;
+      default:
+        return loc.tagOther;
     }
   }
 
@@ -97,12 +122,16 @@ class _TeleFeedbackDialogState extends State<TeleFeedbackDialog> {
       final success = await TelegramService.sendFeedback(
         botToken: widget.botToken,
         chatId: widget.chatId,
-        feedback: _detailController.text.isEmpty ? "Không có nội dung" : _detailController.text,
+        feedback: _detailController.text.isEmpty
+            ? "Không có nội dung"
+            : _detailController.text,
         ratingLabel: _getRatingLabel(_rating),
         tags: _selectedTagIds.map((id) => _getTagLabel(id)).toList(),
         context: context,
         usageSeconds: widget.usageSeconds,
         installDate: widget.installDate,
+        extraInfo: widget.extraInfo,
+        messageBuilder: widget.messageBuilder,
       );
 
       if (mounted) {
@@ -175,10 +204,14 @@ class _TeleFeedbackDialogState extends State<TeleFeedbackDialog> {
                     if (!_isExpanded)
                       TextButton.icon(
                         onPressed: () => setState(() => _isExpanded = true),
-                        icon: const Icon(Icons.notes_rounded, color: Colors.cyan, size: 20),
+                        icon: const Icon(Icons.notes_rounded,
+                            color: Colors.cyan, size: 20),
                         label: Text(
                           loc.feedbackAddDetail,
-                          style: const TextStyle(color: Colors.cyan, fontWeight: FontWeight.bold, fontSize: 15),
+                          style: const TextStyle(
+                              color: Colors.cyan,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15),
                         ),
                       )
                     else
@@ -201,12 +234,13 @@ class _TeleFeedbackDialogState extends State<TeleFeedbackDialog> {
   }
 
   Widget _buildHandleBar(bool isDark) => Container(
-    width: 44, height: 5,
-    decoration: BoxDecoration(
-      color: isDark ? Colors.white12 : Colors.black12,
-      borderRadius: BorderRadius.circular(10),
-    ),
-  );
+        width: 44,
+        height: 5,
+        decoration: BoxDecoration(
+          color: isDark ? Colors.white12 : Colors.black12,
+          borderRadius: BorderRadius.circular(10),
+        ),
+      );
 
   Widget _buildEmojiBtn(int val, String emoji) {
     final isSelected = _rating == val;
@@ -226,10 +260,26 @@ class _TeleFeedbackDialogState extends State<TeleFeedbackDialog> {
           colorFilter: isSelected
               ? const ColorFilter.mode(Colors.transparent, BlendMode.dst)
               : const ColorFilter.matrix(<double>[
-                  0.21, 0.72, 0.07, 0, 0,
-                  0.21, 0.72, 0.07, 0, 0,
-                  0.21, 0.72, 0.07, 0, 0,
-                  0, 0, 0, 1, 0,
+                  0.21,
+                  0.72,
+                  0.07,
+                  0,
+                  0,
+                  0.21,
+                  0.72,
+                  0.07,
+                  0,
+                  0,
+                  0.21,
+                  0.72,
+                  0.07,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
                 ]),
           child: Text(emoji, style: const TextStyle(fontSize: 44)),
         ),
@@ -247,7 +297,9 @@ class _TeleFeedbackDialogState extends State<TeleFeedbackDialog> {
         decoration: BoxDecoration(
           color: isSelected
               ? Colors.cyan.withOpacity(0.15)
-              : (isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03)),
+              : (isDark
+                  ? Colors.white.withOpacity(0.05)
+                  : Colors.black.withOpacity(0.03)),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected ? Colors.cyan : Colors.transparent,
@@ -259,7 +311,9 @@ class _TeleFeedbackDialogState extends State<TeleFeedbackDialog> {
           style: TextStyle(
             fontSize: 13,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            color: isSelected ? Colors.cyan : (isDark ? Colors.white60 : Colors.black54),
+            color: isSelected
+                ? Colors.cyan
+                : (isDark ? Colors.white60 : Colors.black54),
           ),
         ),
       ),
@@ -267,23 +321,27 @@ class _TeleFeedbackDialogState extends State<TeleFeedbackDialog> {
   }
 
   Widget _buildTextField(bool isDark, TeleFeedbackLocale loc) => Container(
-    decoration: BoxDecoration(
-      color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: isDark ? Colors.white12 : Colors.black12),
-    ),
-    child: TextField(
-      controller: _detailController,
-      minLines: 3, maxLines: 5, autofocus: true,
-      style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-      decoration: InputDecoration(
-        hintText: loc.feedbackHint,
-        hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-        border: InputBorder.none,
-        contentPadding: const EdgeInsets.all(16),
-      ),
-    ),
-  );
+        decoration: BoxDecoration(
+          color: isDark
+              ? Colors.white.withOpacity(0.05)
+              : Colors.black.withOpacity(0.03),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: isDark ? Colors.white12 : Colors.black12),
+        ),
+        child: TextField(
+          controller: _detailController,
+          minLines: 3,
+          maxLines: 5,
+          autofocus: true,
+          style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+          decoration: InputDecoration(
+            hintText: loc.feedbackHint,
+            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.all(16),
+          ),
+        ),
+      );
 }
 
 class _SipButton extends StatelessWidget {
@@ -291,7 +349,8 @@ class _SipButton extends StatelessWidget {
   final bool isLoading;
   final String text;
 
-  const _SipButton({required this.isLoading, required this.text, this.onPressed});
+  const _SipButton(
+      {required this.isLoading, required this.text, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -305,23 +364,30 @@ class _SipButton extends StatelessWidget {
       ),
       child: isLoading
           ? const SizedBox(
-              width: 24, height: 24,
-              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(
+                  color: Colors.white, strokeWidth: 2),
             )
           : Text(
               text,
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
             ),
     );
   }
 }
 
-void _showCustomToast(BuildContext context, bool success, TeleFeedbackLocale loc) {
+void _showCustomToast(
+    BuildContext context, bool success, TeleFeedbackLocale loc) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(
         success ? loc.feedbackSuccess : loc.feedbackError,
-        style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
+        style:
+            const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
       ),
       behavior: SnackBarBehavior.floating,
       backgroundColor: success ? Colors.green.shade600 : Colors.red.shade600,
