@@ -24,8 +24,8 @@ class MyApp extends StatelessWidget {
                   TelebotFeedback.show(
                     context,
                     // Thay Token và ChatID thật của bạn vào đây
-                    botToken: '8344768951:AAEOmOp_zUYb8YvbNRVqGzPfJaUrgZIXctk',
-                    chatId: '-1003580964774',
+                    botToken: '<your_bot_token>',
+                    chatId: '<your_chat_id>',
                     
                     // Giả lập dữ liệu Tracking (Vì ở Example ko có UsageTracker thật)
                     usageSeconds: 3600, // Ví dụ: Đã dùng 1 tiếng
