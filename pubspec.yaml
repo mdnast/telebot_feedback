@@ -1,5 +1,5 @@
 name: telebot_feedback
-description: Một thư viện gửi feedback về Telegram kèm thông tin thiết bị và tracking người dùng.
+description: A Flutter feedback library that sends user feedback to Telegram with device info and tracking.
 version: 0.0.1
 homepage: https://github.com/mdnast/telebot_feedback.git
 
