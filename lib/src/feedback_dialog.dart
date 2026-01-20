@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'telegram_service.dart';
-import 'feedback_locale.dart';
-import 'feedback_data.dart';
+import 'package:telebot_feedback/src/telegram_service.dart';
+import 'package:telebot_feedback/src/feedback_locale.dart';
+import 'package:telebot_feedback/src/feedback_data.dart';
 
 class TeleFeedbackDialog extends StatefulWidget {
   final String botToken;
@@ -116,6 +116,7 @@ class _TeleFeedbackDialogState extends State<TeleFeedbackDialog> {
 
   void _submitFeedback() async {
     if (_isSending) return;
+    final localeStr = Localizations.localeOf(context).toString();
     setState(() => _isSending = true);
 
     try {
@@ -127,7 +128,7 @@ class _TeleFeedbackDialogState extends State<TeleFeedbackDialog> {
             : _detailController.text,
         ratingLabel: _getRatingLabel(_rating),
         tags: _selectedTagIds.map((id) => _getTagLabel(id)).toList(),
-        context: context,
+        locale: localeStr,
         usageSeconds: widget.usageSeconds,
         installDate: widget.installDate,
         extraInfo: widget.extraInfo,
@@ -135,16 +136,43 @@ class _TeleFeedbackDialogState extends State<TeleFeedbackDialog> {
       );
 
       if (mounted) {
+        final scaffoldMessenger = ScaffoldMessenger.of(context);
         setState(() => _isSending = false);
         Navigator.of(context).pop();
-        _showCustomToast(context, success, widget.locale);
+        _showCustomToast(scaffoldMessenger, success, widget.locale);
       }
     } catch (e) {
       if (mounted) {
+        final scaffoldMessenger = ScaffoldMessenger.of(context);
         setState(() => _isSending = false);
-        _showCustomToast(context, false, widget.locale);
+        _showCustomToast(scaffoldMessenger, false, widget.locale);
       }
     }
+  }
+
+  void _showCustomToast(
+      ScaffoldMessengerState messenger, bool success, TeleFeedbackLocale loc) {
+    messenger.showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(
+              success ? Icons.check_circle_rounded : Icons.error_rounded,
+              color: success ? Colors.greenAccent : Colors.redAccent,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              success ? loc.feedbackSuccess : loc.feedbackError,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.black87,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: const EdgeInsets.all(16),
+      ),
+    );
   }
 
   @override
@@ -378,21 +406,4 @@ class _SipButton extends StatelessWidget {
             ),
     );
   }
-}
-
-void _showCustomToast(
-    BuildContext context, bool success, TeleFeedbackLocale loc) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(
-        success ? loc.feedbackSuccess : loc.feedbackError,
-        style:
-            const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
-      ),
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: success ? Colors.green.shade600 : Colors.red.shade600,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      duration: const Duration(seconds: 3),
-    ),
-  );
 }

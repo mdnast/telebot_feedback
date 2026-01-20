@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'feedback_data.dart';
+import 'package:telebot_feedback/src/feedback_data.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -13,7 +13,7 @@ class TelegramService {
     required String feedback,
     required String ratingLabel,
     required List<String> tags,
-    required BuildContext context,
+    required String locale,
     int? usageSeconds,
     DateTime? installDate,
     Map<String, String>? extraInfo,
@@ -49,8 +49,7 @@ class TelegramService {
       debugPrint('Error getting package info: $e');
     }
 
-    // 3. Xử lý Ngôn ngữ & Flag
-    String locale = Localizations.localeOf(context).toString();
+    // 3. Xử lý Ngôn ngữ & Flag (Locale đã được truyền vào từ UI)
     String flag = _getFlag(locale);
     String localeDisplay = flag.isNotEmpty ? '$flag $locale' : locale;
 

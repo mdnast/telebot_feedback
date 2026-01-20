@@ -33,20 +33,37 @@ Thư viện Flutter hiện đại giúp thu thập phản hồi từ người d�
 
 ---
 
-## 🚀 2. Triển khai nhanh (Quick Start)
+## 🚀 2. Cài đặt & Sử dụng
 
-Thêm vào `pubspec.yaml`:
+### 📦 Bước 1: Thêm dependency vào `pubspec.yaml`
+
+Tùy vào cách bạn muốn sử dụng, hãy chọn một trong các cách sau:
+
+**Cách 1: Sử dụng qua Git (Khuyên dùng)**
 ```yaml
-telebot_feedback:
-  git:
-    url: https://github.com/mdnast/telebot_feedback.git
-    ref: main
+dependencies:
+  telebot_feedback:
+    git:
+      url: https://github.com/mdnast/telebot_feedback.git
+      ref: main
 ```
 
-Sử dụng trong code:
+**Cách 2: Sử dụng Local (Khi bạn đang chỉnh sửa thư viện)**
+```yaml
+dependencies:
+  telebot_feedback:
+    path: ../telebot_feedback  # Đường dẫn đến thư mục chứa thư viện
+```
+
+> [!IMPORTANT]
+> Sau khi thêm, hãy đừng quên chạy lệnh **`flutter pub get`** trong terminal.
+
+### 🛠️ Bước 2: Import và Sử dụng
+
 ```dart
 import 'package:telebot_feedback/telebot_feedback.dart';
 
+// Gọi ở bất cứ đâu khi có context (thường là trong onPressed của nút bấm)
 TelebotFeedback.show(
   context,
   botToken: 'YOUR_BOT_TOKEN',

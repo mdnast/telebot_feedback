@@ -1,0 +1,10 @@
+Analyzing telebot_feedback...                                   
+
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\feedback_dialog.dart:299:29 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\feedback_dialog.dart:301:34 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\feedback_dialog.dart:302:34 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\feedback_dialog.dart:326:30 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\feedback_dialog.dart:327:30 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps - lib\src\telegram_service.dart:53:44 - use_build_context_synchronously
+
+6 issues found. (ran in 2.8s)

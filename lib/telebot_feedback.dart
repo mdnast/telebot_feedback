@@ -1,12 +1,12 @@
-library telebot_feedback;
+// telebot_feedback.dart
 
 import 'package:flutter/material.dart';
-import 'src/feedback_dialog.dart';
-import 'src/feedback_locale.dart';
-import 'src/feedback_data.dart';
+import 'package:telebot_feedback/src/feedback_dialog.dart';
+import 'package:telebot_feedback/src/feedback_locale.dart';
+import 'package:telebot_feedback/src/feedback_data.dart';
 
-export 'src/feedback_locale.dart';
-export 'src/feedback_data.dart';
+export 'package:telebot_feedback/src/feedback_locale.dart';
+export 'package:telebot_feedback/src/feedback_data.dart';
 
 class TelebotFeedback {
   static void show(
